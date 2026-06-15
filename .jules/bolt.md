@@ -1,0 +1,3 @@
+## 2025-05-14 - [Infinite Allowance Optimization]
+**Learning:** In Solidity 0.6.x (specifically OpenZeppelin 3.3.0), `transferFrom` and `burnFrom` always update the allowance, even if it is set to "infinite" (`uint256(-1)`). Overriding these methods to skip the allowance update when it's infinite saves approximately 5,000 gas per call by avoiding an expensive `SSTORE` operation.
+**Action:** Always implement infinite allowance check in `transferFrom` and `burnFrom` overrides when using older OpenZeppelin versions. Note that `using SafeMath for uint256;` must be explicitly declared in the contract as it's not inherited.

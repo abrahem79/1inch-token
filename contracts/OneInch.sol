@@ -8,6 +8,8 @@ import "./ERC20Permit.sol";
 
 
 contract OneInch is ERC20Permit, ERC20Burnable, Ownable {
+    using SafeMath for uint256;
+
     constructor(address _owner) public ERC20("1INCH Token", "1INCH") EIP712("1INCH Token", "1") {
         _mint(_owner, 1.5e9 ether);
         transferOwnership(_owner);
@@ -15,5 +17,22 @@ contract OneInch is ERC20Permit, ERC20Burnable, Ownable {
 
     function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        _transfer(sender, recipient, amount);
+        uint256 currentAllowance = allowance(sender, _msgSender());
+        if (currentAllowance != uint256(-1)) {
+            _approve(sender, _msgSender(), currentAllowance.sub(amount, "ERC20: transfer amount exceeds allowance"));
+        }
+        return true;
+    }
+
+    function burnFrom(address account, uint256 amount) public override {
+        uint256 currentAllowance = allowance(account, _msgSender());
+        if (currentAllowance != uint256(-1)) {
+            _approve(account, _msgSender(), currentAllowance.sub(amount, "ERC20: burn amount exceeds allowance"));
+        }
+        _burn(account, amount);
     }
 }
