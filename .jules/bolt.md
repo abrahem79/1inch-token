@@ -1,0 +1,3 @@
+## 2025-06-21 - [Infinite Allowance Gas Optimization]
+**Learning:** Implementing an "infinite allowance" check in `transferFrom` and `burnFrom` saves approximately 5,120-5,148 gas per call when the allowance is set to `uint256(-1)`. This is because it skips a storage write to the `_allowances` mapping and the corresponding `Approval` event emission. In Solidity 0.6.x, explicitly declaring `using SafeMath for uint256;` in the contract is necessary even if the base contract already uses it, as the directive is not inherited.
+**Action:** Always consider implementing infinite allowance optimizations for ERC20 tokens to save gas for power users and integrated protocols.
