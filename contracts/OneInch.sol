@@ -21,18 +21,22 @@ contract OneInch is ERC20Permit, ERC20Burnable, Ownable {
     }
 
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
-        uint256 currentAllowance = allowance(sender, _msgSender());
+        address spender = _msgSender();
+        uint256 currentAllowance = allowance(sender, spender);
         if (currentAllowance != uint256(-1)) {
-            _approve(sender, _msgSender(), currentAllowance.sub(amount, "ERC20: transfer amount exceeds allowance"));
+            require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+            _approve(sender, spender, currentAllowance - amount);
         }
         _transfer(sender, recipient, amount);
         return true;
     }
 
     function burnFrom(address account, uint256 amount) public override {
-        uint256 currentAllowance = allowance(account, _msgSender());
+        address spender = _msgSender();
+        uint256 currentAllowance = allowance(account, spender);
         if (currentAllowance != uint256(-1)) {
-            _approve(account, _msgSender(), currentAllowance.sub(amount, "ERC20: burn amount exceeds allowance"));
+            require(currentAllowance >= amount, "ERC20: burn amount exceeds allowance");
+            _approve(account, spender, currentAllowance - amount);
         }
         _burn(account, amount);
     }
