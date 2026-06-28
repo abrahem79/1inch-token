@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package wallet;
+
+service WalletService {
+  rpc GenerateKey (GenerateKeyRequest) returns (GenerateKeyResponse);
+  rpc SignTransaction (SignTransactionRequest) returns (SignTransactionResponse);
+  rpc ImportKey (ImportKeyRequest) returns (ImportKeyResponse);
+  rpc ExportKey (ExportKeyRequest) returns (ExportKeyResponse);
+}
+
+message GenerateKeyRequest {
+  enum KeyType {
+    SECP256K1 = 0;
+    ED25519 = 1;
+  }
+  KeyType type = 1;
+}
+
+message GenerateKeyResponse {
+  string address = 1;
+  string publicKey = 2;
+}
+
+message SignTransactionRequest {
+  string address = 1;
+  bytes transactionPayload = 2;
+  string chainType = 3; // e.g., "EVM"
+}
+
+message SignTransactionResponse {
+  bytes signature = 1;
+}
+
+message ImportKeyRequest {
+  bytes encryptedPrivateKey = 1; // RSA-4096 OAEP encrypted
+  string keyType = 2; // "secp256k1" or "ed25519"
+}
+
+message ImportKeyResponse {
+  string address = 1;
+}
+
+message ExportKeyRequest {
+  string address = 1;
+  string ephemeralPublicKey = 2; // Client's ephemeral RSA public key
+}
+
+message ExportKeyResponse {
+  bytes encryptedPrivateKey = 1; // RSA-4096 OAEP encrypted with ephemeralPublicKey
+}
