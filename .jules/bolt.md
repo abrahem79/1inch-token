@@ -5,3 +5,7 @@
 ## 2026-06-28 - [TEE Wallet Service Implementation]
 **Learning:** Implementing envelope encryption (KEK -> DEK -> Private Key) with AAD (Wallet Address) provides strong security for TEE-based wallet services. JWT (ES256) with request body hashing (`reqHash`) ensures request integrity and non-repudiation in gRPC services.
 **Action:** Use `crypto.createHash('sha256').update(JSON.stringify(sortObjectKeys(body))).digest('hex')` for consistent request hashing across services.
+
+## 2026-06-28 - [API Service Implementation]
+**Learning:** Decoupling the API layer from the TEE Wallet Service via gRPC and JWT ensures that the "trusted" logic is isolated. Using Zod for request validation prevents malformed data from reaching the sensitive TEE environment.
+**Action:** Always wrap gRPC calls in the API service with metadata-based JWT authentication using the `X-Wallet-Auth` header.
