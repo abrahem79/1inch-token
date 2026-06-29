@@ -60,7 +60,12 @@ abstract contract EIP712 {
      * @dev Returns the domain separator for the current chain.
      */
     function _domainSeparatorV4() internal view returns (bytes32) {
-        if (_getChainId() == _CACHED_CHAIN_ID) {
+        uint256 chainId;
+        // solhint-disable-next-line no-inline-assembly
+        assembly {
+            chainId := chainid()
+        }
+        if (chainId == _CACHED_CHAIN_ID) {
             return _CACHED_DOMAIN_SEPARATOR;
         } else {
             return _buildDomainSeparator(_TYPE_HASH, _HASHED_NAME, _HASHED_VERSION);
@@ -68,12 +73,17 @@ abstract contract EIP712 {
     }
 
     function _buildDomainSeparator(bytes32 typeHash, bytes32 name, bytes32 version) private view returns (bytes32) {
+        uint256 chainId;
+        // solhint-disable-next-line no-inline-assembly
+        assembly {
+            chainId := chainid()
+        }
         return keccak256(
             abi.encode(
                 typeHash,
                 name,
                 version,
-                _getChainId(),
+                chainId,
                 address(this)
             )
         );
