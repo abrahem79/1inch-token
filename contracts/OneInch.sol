@@ -23,7 +23,10 @@ contract OneInch is ERC20Permit, ERC20Burnable, Ownable {
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         uint256 currentAllowance = allowance(sender, _msgSender());
         if (currentAllowance != uint256(-1)) {
-            _approve(sender, _msgSender(), currentAllowance.sub(amount, "ERC20: transfer amount exceeds allowance"));
+            // Gas optimization: use raw subtraction instead of SafeMath.sub to avoid internal library call overhead.
+            // Safety is preserved by the explicit require check above.
+            require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+            _approve(sender, _msgSender(), currentAllowance - amount);
         }
         _transfer(sender, recipient, amount);
         return true;
@@ -32,7 +35,10 @@ contract OneInch is ERC20Permit, ERC20Burnable, Ownable {
     function burnFrom(address account, uint256 amount) public override {
         uint256 currentAllowance = allowance(account, _msgSender());
         if (currentAllowance != uint256(-1)) {
-            _approve(account, _msgSender(), currentAllowance.sub(amount, "ERC20: burn amount exceeds allowance"));
+            // Gas optimization: use raw subtraction instead of SafeMath.sub to avoid internal library call overhead.
+            // Safety is preserved by the explicit require check above.
+            require(currentAllowance >= amount, "ERC20: burn amount exceeds allowance");
+            _approve(account, _msgSender(), currentAllowance - amount);
         }
         _burn(account, amount);
     }
