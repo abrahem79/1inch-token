@@ -5,3 +5,7 @@
 ## 2026-06-28 - [TEE Wallet Service Implementation]
 **Learning:** Implementing envelope encryption (KEK -> DEK -> Private Key) with AAD (Wallet Address) provides strong security for TEE-based wallet services. JWT (ES256) with request body hashing (`reqHash`) ensures request integrity and non-repudiation in gRPC services.
 **Action:** Use `crypto.createHash('sha256').update(JSON.stringify(sortObjectKeys(body))).digest('hex')` for consistent request hashing across services.
+
+## 2026-06-29 - [Optimized Wallet Generation]
+**Learning:** `ethers.Wallet.createRandom()` in ethers v6 is significantly slower (~93%) than direct instantiation from random bytes because it generates a mnemonic by default. Also, ethers v6 strictly requires a `0x` prefix for private key hex strings.
+**Action:** Use `crypto.randomBytes(32)` for SECP256K1 key generation and always prefix hex keys with `0x` when instantiating `ethers.Wallet`.
