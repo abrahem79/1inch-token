@@ -51,8 +51,9 @@ abstract contract EIP712 {
         bytes32 typeHash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
         _HASHED_NAME = hashedName;
         _HASHED_VERSION = hashedVersion;
-        _CACHED_CHAIN_ID = _getChainId();
-        _CACHED_DOMAIN_SEPARATOR = _buildDomainSeparator(typeHash, hashedName, hashedVersion);
+        uint256 chainId = _getChainId();
+        _CACHED_CHAIN_ID = chainId;
+        _CACHED_DOMAIN_SEPARATOR = _buildDomainSeparator(typeHash, hashedName, hashedVersion, chainId);
         _TYPE_HASH = typeHash;
     }
 
@@ -60,20 +61,25 @@ abstract contract EIP712 {
      * @dev Returns the domain separator for the current chain.
      */
     function _domainSeparatorV4() internal view returns (bytes32) {
-        if (_getChainId() == _CACHED_CHAIN_ID) {
+        // BOLT OPTIMIZATION: Inlining chainid() and passing it as parameter reduces gas
+        uint256 chainId;
+        assembly {
+            chainId := chainid()
+        }
+        if (chainId == _CACHED_CHAIN_ID) {
             return _CACHED_DOMAIN_SEPARATOR;
         } else {
-            return _buildDomainSeparator(_TYPE_HASH, _HASHED_NAME, _HASHED_VERSION);
+            return _buildDomainSeparator(_TYPE_HASH, _HASHED_NAME, _HASHED_VERSION, chainId);
         }
     }
 
-    function _buildDomainSeparator(bytes32 typeHash, bytes32 name, bytes32 version) private view returns (bytes32) {
+    function _buildDomainSeparator(bytes32 typeHash, bytes32 name, bytes32 version, uint256 chainId) private view returns (bytes32) {
         return keccak256(
             abi.encode(
                 typeHash,
                 name,
                 version,
-                _getChainId(),
+                chainId,
                 address(this)
             )
         );
