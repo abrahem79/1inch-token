@@ -12,7 +12,7 @@ To get started with the Jules REST API, you'll need an API key.
 
 In the Jules web app, go to the **[Settings](https://jules.google.com/settings#api)** page to create a new API key. You can have at most 3 API keys at a time.
 
-![Jules REST API Key creation interface](https://jules.google/docs/_astro/jules-api-key-settings.XPNzaqrV_1PNNGB.webp)
+![Jules REST API Key creation interface](https://jules.google/docs/jules-api-key-settings.XPNzaqrV_1PNNGB.webp)
 
 ### Use Your API Key
 
@@ -82,7 +82,7 @@ curl 'https://jules.googleapis.com/v1alpha/sessions' \
   }'
 ```
 
-The `automationMode` field is optional. By default, no PR will be automatically created.
+   The `automationMode` field is optional. By default, no PR will be automatically created.
 
    The immediate response will look something like this:
 
@@ -172,7 +172,7 @@ curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID:sendMessage' \
   }'
 ```
 
-The response will be empty because the agent will send its response in the next activity. To see the agent's response, list the activities again.
+   The response will be empty because the agent will send its response in the next activity. To see the agent's response, list the activities again.
 
 ## Next steps
 
