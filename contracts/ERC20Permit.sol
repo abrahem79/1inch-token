@@ -23,8 +23,10 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
 
     mapping (address => Counters.Counter) private _nonces;
 
+    // BOLT OPTIMIZATION: In Solidity 0.6.x, changing _PERMIT_TYPEHASH to constant from immutable saves execution gas
+    // by allowing the compiler to pre-compute the hash and avoiding storage/deployment overhead.
     // solhint-disable-next-line var-name-mixedcase
-    bytes32 private immutable _PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+    bytes32 private constant _PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
     /**
      * @dev See {IERC20Permit-permit}.
