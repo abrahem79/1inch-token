@@ -9,3 +9,7 @@
 ## 2026-06-30 - [Efficient SECP256K1 Wallet Generation]
 **Learning:** `ethers.Wallet.createRandom()` is slow (~10ms) because it generates a mnemonic phrase. Direct instantiation from 32 random bytes via `crypto.randomBytes(32)` is ~15x faster (~0.7ms) and equally secure if the mnemonic is not needed.
 **Action:** Prefer `new ethers.Wallet('0x' + crypto.randomBytes(32).toString('hex'))` over `createRandom()` for high-performance wallet generation.
+
+## 2026-07-02 - [EIP-712 Permit Optimization]
+**Learning:** In Solidity 0.6.x, EIP-712 type hashes should be declared as `constant` instead of `immutable` to allow the compiler to pre-compute hash values and avoid storage/deployment overhead. Inlining assembly `chainid()` lookups and passing it to internal helper functions further avoids redundant opcodes and internal call JUMP overheads, saving exactly 31-36 gas per `permit()` transaction.
+**Action:** Inline `chainid` lookup and use `constant` type hashes to optimize EIP-712 message signing and verification.
