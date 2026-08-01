@@ -37,10 +37,9 @@ We'll walk through creating your first session with the Jules REST API using cur
    First, you need to find the name of the source you want to work with (e.g., your GitHub repo). This command will return a list of all sources you have connected to Jules.
 
    ```bash
-curl -H "x-goog-api-key: $JULES_API_KEY" \
-  https://jules.googleapis.com/v1alpha/sources
-
-```
+   curl -H "x-goog-api-key: $JULES_API_KEY" \
+     https://jules.googleapis.com/v1alpha/sources
+   ```
 
    The response will look something like this:
 
@@ -65,24 +64,24 @@ curl -H "x-goog-api-key: $JULES_API_KEY" \
    Now, create a new session. You'll need the source name from the previous step. This request tells Jules to create a boba app in the specified repository.
 
    ```bash
-curl 'https://jules.googleapis.com/v1alpha/sessions' \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -H "x-goog-api-key: $JULES_API_KEY" \
-  -d '{
-    "prompt": "Create a boba app!",
-    "sourceContext": {
-      "source": "sources/github/bobalover/boba",
-      "githubRepoContext": {
-        "startingBranch": "main"
-      }
-    },
-    "automationMode": "AUTO_CREATE_PR",
-    "title": "Boba App"
-  }'
-```
+   curl 'https://jules.googleapis.com/v1alpha/sessions' \
+     -X POST \
+     -H "Content-Type: application/json" \
+     -H "x-goog-api-key: $JULES_API_KEY" \
+     -d '{
+       "prompt": "Create a boba app!",
+       "sourceContext": {
+         "source": "sources/github/bobalover/boba",
+         "githubRepoContext": {
+           "startingBranch": "main"
+         }
+       },
+       "automationMode": "AUTO_CREATE_PR",
+       "title": "Boba App"
+     }'
+   ```
 
-The `automationMode` field is optional. By default, no PR will be automatically created.
+   The `automationMode` field is optional. By default, no PR will be automatically created.
 
    The immediate response will look something like this:
 
@@ -134,45 +133,43 @@ The `automationMode` field is optional. By default, no PR will be automatically 
    You can list your sessions as follows:
 
    ```bash
-curl 'https://jules.googleapis.com/v1alpha/sessions?pageSize=5' \
-  -H "x-goog-api-key: $JULES_API_KEY"
-
-```
+   curl 'https://jules.googleapis.com/v1alpha/sessions?pageSize=5' \
+     -H "x-goog-api-key: $JULES_API_KEY"
+   ```
 
 4. ### Approve a plan
 
    If your session requires explicit plan approval, you can approve the latest plan as follows:
 
    ```bash
-curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID:approvePlan' \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -H "x-goog-api-key: $JULES_API_KEY"
-```
+   curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID:approvePlan' \
+     -X POST \
+     -H "Content-Type: application/json" \
+     -H "x-goog-api-key: $JULES_API_KEY"
+   ```
 
 5. ### Interact with the agent
 
    To list activities in a session:
 
    ```bash
-curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID/activities?pageSize=30' \
-  -H "x-goog-api-key: $JULES_API_KEY"
-
-```
+   curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID/activities?pageSize=30' \
+     -H "x-goog-api-key: $JULES_API_KEY"
+   ```
 
    To send a message to the agent:
 
    ```bash
-curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID:sendMessage' \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -H "x-goog-api-key: $JULES_API_KEY" \
-  -d '{
-    "prompt": "Can you make the app corgi themed?"
-  }'
-```
+   curl 'https://jules.googleapis.com/v1alpha/sessions/SESSION_ID:sendMessage' \
+     -X POST \
+     -H "Content-Type: application/json" \
+     -H "x-goog-api-key: $JULES_API_KEY" \
+     -d '{
+       "prompt": "Can you make the app corgi themed?"
+     }'
+   ```
 
-The response will be empty because the agent will send its response in the next activity. To see the agent's response, list the activities again.
+   The response will be empty because the agent will send its response in the next activity. To see the agent's response, list the activities again.
 
 ## Next steps
 
