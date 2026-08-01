@@ -51,7 +51,7 @@ async function benchmark() {
     const startDirect = Date.now();
     for (let i = 0; i < iterations; i++) {
         const privKey = crypto.randomBytes(32);
-        const wallet = new ethers_1.ethers.Wallet(privKey.toString('hex'));
+        const wallet = new ethers_1.ethers.Wallet('0x' + privKey.toString('hex'));
         const privateKey = Buffer.from(wallet.privateKey.substring(2), 'hex');
         const address = wallet.address;
     }
