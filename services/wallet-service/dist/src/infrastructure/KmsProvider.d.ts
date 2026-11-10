@@ -1,5 +1,6 @@
 export declare class KmsProvider {
     private static readonly KEK_ALGORITHM;
+    private static cachedKek;
     private readonly kek;
     constructor();
     encrypt(plaintext: Buffer, aad: string): Promise<{

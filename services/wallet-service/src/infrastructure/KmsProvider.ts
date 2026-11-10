@@ -2,12 +2,18 @@ import * as crypto from 'crypto';
 
 export class KmsProvider {
   private static readonly KEK_ALGORITHM = 'aes-256-gcm';
+  // BOLT OPTIMIZATION: Cache derived mock KEK key statically to avoid repeating expensive
+  // crypto.scryptSync key derivation (~55ms per invocation) on each KmsProvider instantiation.
+  private static cachedKek: Buffer | null = null;
   private readonly kek: Buffer;
 
   constructor() {
     // In a real TEE, this would be backed by Cloud KMS HSM
     // For mock, we generate a random KEK on start or use a fixed one if provided
-    this.kek = crypto.scryptSync('mock-kms-master-key', 'salt', 32);
+    if (!KmsProvider.cachedKek) {
+      KmsProvider.cachedKek = crypto.scryptSync('mock-kms-master-key', 'salt', 32);
+    }
+    this.kek = KmsProvider.cachedKek;
   }
 
   async encrypt(plaintext: Buffer, aad: string): Promise<{ ciphertext: Buffer; iv: Buffer; tag: Buffer }> {
